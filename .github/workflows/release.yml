@@ -22,18 +22,12 @@ jobs:
         with:
           go-version-file: go.mod
 
-      - name: Install git-cliff
+      - name: Install tools
         uses: taiki-e/install-action@v2
         with:
-          tool: git-cliff
-
-      - name: Generate release notes
-        run: git cliff --latest --strip header > RELEASE_NOTES.md
+          tool: git-cliff,goreleaser@2
 
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v6
-        with:
-          version: "~> v2"
-          args: release --clean --release-notes=RELEASE_NOTES.md
+        run: git cliff --latest --strip header | goreleaser release --clean --release-notes=-
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
